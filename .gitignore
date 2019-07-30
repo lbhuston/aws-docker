@@ -1,0 +1,9 @@
+*.pyc
+*~
+
+.DS_Store
+
+# virtualenv directory
+pyenv
+terraform
+

@@ -1,0 +1,39 @@
+FROM ubuntu:18.04
+
+# Needed to make "click" module happy
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+ENV PYTHONPATH=/code:/code/packages
+
+# Create a non-root user to run services
+RUN useradd -ms /bin/bash awsdev
+
+RUN mkdir -p /work
+RUN chown -R awsdev /work
+
+
+# 
+#
+RUN apt-get update
+RUN apt-get install -y python3
+RUN apt-get install -y python3-pip
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+
+
+
+# Install Python dependencies
+COPY requirements.txt /code/
+RUN pip3 install -r /code/requirements.txt
+
+
+# Install terraform from local file system
+COPY terraform /code
+RUN install /code/terraform /usr/local/bin 
+
+
+# switch to awsdev user
+USER awsdev
+
+WORKDIR /work
+
+CMD  ["/bin/bash"]
